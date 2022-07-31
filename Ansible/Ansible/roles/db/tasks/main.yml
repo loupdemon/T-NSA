@@ -1,0 +1,4 @@
+---
+- include_tasks: install_db.yml
+
+- include_tasks: configure_db.yml

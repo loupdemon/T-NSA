@@ -1,0 +1,15 @@
+---
+- name: Install MariaDB
+  become: yes
+  become_method: sudo
+  block:
+  - name: Install MariaDb
+    become: yes
+    apt:
+      name: mariadb-server
+      state: present
+    notify: mariadbServiceStarted
+  - name: "Install ansible python3 mysql dependency"
+    apt:
+      name: python3-mysqldb
+      state: latest

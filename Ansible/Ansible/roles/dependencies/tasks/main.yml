@@ -1,0 +1,28 @@
+- name: Init VM
+  become: yes
+  become_method: sudo
+  block:
+  - name: Upgrade all packages
+    apt:
+      name: '*'
+      state: latest
+  - name: Setup Node
+    shell: 'curl -fsSL https://deb.nodesource.com/setup_12.x | bash -'
+  - name: Install required packages
+    apt: name={{ item }} state=present
+    with_items:
+      - npm
+      - git
+      - curl
+      - wget
+      - nginx
+      - nodejs
+      - composer
+      - gzip
+      - php
+      - php-mysql
+      - php-json
+      - php-fpm
+      - php-fpm
+      - php-xml
+      - php-intl

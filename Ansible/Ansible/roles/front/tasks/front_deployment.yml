@@ -1,0 +1,36 @@
+---
+- name: Deploy Front
+  become: no
+  become_method: sudo
+  block:
+  - name: Clone a github repository
+    become: no
+    git:
+      repo: https://github.com/brice-74/epitech-nsa-front
+      dest: /home/geoff/apps
+      update: yes
+      force: yes
+  - name: Update env file for angular
+    ansible.builtin.template:
+      src: env.j2
+      dest: /home/geoff/apps/src/environments/environment.ts 
+      owner: geoff
+      group: geoff
+      mode: '0755'
+      backup: yes
+  - name: Install Angular.js
+    become: yes
+    npm:
+      name: "@angular/cli"
+      global: yes
+      state: present
+  - name: Install packages based on package.json.
+    become: no
+    npm:
+      path: /home/geoff/apps
+  - name: compile npm
+    become: no
+    shell: 'npm run build'
+    args:
+      chdir: /home/geoff/apps
+     

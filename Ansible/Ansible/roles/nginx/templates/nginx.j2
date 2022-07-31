@@ -1,0 +1,42 @@
+user www-data;
+worker_processes auto;
+pid /run/nginx.pid;
+include /etc/nginx/modules-enabled/*.conf;
+
+events {
+        worker_connections 768;
+        # multi_accept on;
+}
+
+http {
+server {
+    listen 80;
+    server_name {{ hostname }} www.{{ hostname }};
+    root {{ nginx_back_folder }};
+
+    index index.html index.htm index.php;
+
+    location /api/ {
+        root {{ nginx_back_folder }};
+        try_files $uri  /index.php$is_args$args;
+    }
+
+    location / {
+        root {{ nginx_front }};
+        try_files $uri $uri/ /index.html;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+     }
+
+    location ~ /\.ht {
+        deny all;
+    }
+location ^~ /.well-known/acme-challenge/ {
+ alias /var/www/html/.well-known/acme-challenge/;
+}
+}
+}

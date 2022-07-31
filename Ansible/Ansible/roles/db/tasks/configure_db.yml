@@ -1,0 +1,22 @@
+---
+- name: Configure MariaDB
+  become: yes
+  become_method: sudo
+  block:
+  - name: Create database user preprod
+    community.mysql.mysql_user:
+      name: "{{DB_USERNAME}}"
+      password: "{{DB_PASSWORD}}"
+      priv: '*.*:ALL'
+      state: present
+
+  - name: "Create preprod database"
+    mysql_db:
+      login_user: "{{DB_USERNAME}}"
+      login_password: "{{DB_PASSWORD}}"
+      db: "{{DB_DATABASE}}"
+      state: present
+
+
+
+

@@ -1,0 +1,21 @@
+---
+- hosts: prod
+  vars:
+    hostname: 192.168.1.88
+    nginx_front: /var/www/apps/dist/front
+    DB_HOST: localhost
+    DB_PORT: 3306
+    DB_USERNAME: prodgeoff
+    DB_DATABASE: prod
+    DB_PASSWORD: prodgeoff
+    back_root_dir: /home/geoff/back
+    laravel_url: http://192.168.1.88/api
+    nginx_back_folder: /var/www/back/public
+    app_env: local
+    env_front: false
+  roles:
+    - dependencies
+    - db
+    - back
+    - front
+    - nginx

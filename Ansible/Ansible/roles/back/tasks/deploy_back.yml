@@ -1,0 +1,36 @@
+---
+- name: Deploy Front
+  become: no
+  block:
+  - name: Clone repository
+    git:
+      repo: https://github.com/datVaulting/back-nsa-devops
+      dest: "{{ back_root_dir }}"
+      force: yes
+    become: no
+
+## ENV
+
+  - name: Copy .env.example to .env
+    ansible.builtin.template:
+      src: env.j2
+      dest: '{{ back_root_dir }}/.env'
+      owner: geoff
+      group: geoff
+      mode: '0755'
+      backup: yes
+
+  - name: composer install 
+    community.general.composer:
+      command: update
+      working_dir: '{{ back_root_dir }}'
+    environment:
+        COMPOSER_NO_INTERACTION: "1"
+
+  - name: Migration of database 
+    command: php artisan migrate --force
+    become: no
+    args:
+      chdir: "{{ back_root_dir }}"
+    ignore_errors: yes #On ignore l'erreur car si les tables sont déjà créer dans notre DB, on va avoir une erreur ansible pour rien. 
+  
